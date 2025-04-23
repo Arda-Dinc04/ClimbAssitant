@@ -1,0 +1,249 @@
+{
+  "route_info": {
+    "total_steps": 10,
+    "difficulty": "intermediate",
+    "image": "climbing_wall.jpg"
+  },
+  "holds": [
+    {
+      "id": 0,
+      "x": 275,
+      "y": 1050,
+      "color": "blue",
+      "size": "medium",
+      "type": "jug"
+    },
+    {
+      "id": 1,
+      "x": 450,
+      "y": 1050,
+      "color": "blue",
+      "size": "medium",
+      "type": "jug"
+    },
+    {
+      "id": 2,
+      "x": 400,
+      "y": 900,
+      "color": "green",
+      "size": "small",
+      "type": "crimp"
+    },
+    {
+      "id": 3,
+      "x": 500,
+      "y": 850,
+      "color": "green",
+      "size": "small",
+      "type": "pinch"
+    },
+    {
+      "id": 4,
+      "x": 425,
+      "y": 750,
+      "color": "green",
+      "size": "small",
+      "type": "crimp"
+    },
+    {
+      "id": 5,
+      "x": 475,
+      "y": 650,
+      "color": "green",
+      "size": "small",
+      "type": "crimp"
+    },
+    {
+      "id": 6,
+      "x": 375,
+      "y": 600,
+      "color": "green",
+      "size": "small",
+      "type": "crimp"
+    },
+    {
+      "id": 7,
+      "x": 450,
+      "y": 500,
+      "color": "green",
+      "size": "small",
+      "type": "pinch"
+    },
+    {
+      "id": 8,
+      "x": 540,
+      "y": 450,
+      "color": "yellow",
+      "size": "medium",
+      "type": "sloper"
+    },
+    {
+      "id": 9,
+      "x": 475,
+      "y": 350,
+      "color": "orange",
+      "size": "medium",
+      "type": "jug"
+    },
+    {
+      "id": 10,
+      "x": 400,
+      "y": 200,
+      "color": "red",
+      "size": "large",
+      "type": "jug"
+    }
+  ],
+  "instructions": [
+    {
+      "step": 1,
+      "hold": {
+        "id": 1,
+        "x": 450,
+        "y": 1050,
+        "color": "blue",
+        "type": "jug",
+        "size": "medium"
+      },
+      "limb": "left_hand",
+      "movement": "Start with left hand on the first hold",
+      "body_position": "Standing at the base, reach up with left hand",
+      "instruction": "Step 1: Start with left hand on the first hold. Standing at the base, reach up with left hand"
+    },
+    {
+      "step": 2,
+      "hold": {
+        "id": 2,
+        "x": 400,
+        "y": 900,
+        "color": "green",
+        "type": "crimp",
+        "size": "small"
+      },
+      "limb": "right_hand",
+      "movement": "Place right hand on the next hold",
+      "body_position": "Weight balanced between both arms, feet on starting holds or features",
+      "instruction": "Step 2: Place right hand on the next hold. Weight balanced between both arms, feet on starting holds or features"
+    },
+    {
+      "step": 3,
+      "hold": {
+        "id": 3,
+        "x": 500,
+        "y": 850,
+        "color": "green",
+        "type": "pinch",
+        "size": "small"
+      },
+      "limb": "left_foot",
+      "movement": "Place left foot on the green pinch",
+      "body_position": "Shift your weight as you move your foot. Prepare to move left next.",
+      "instruction": "Step 3: Place left foot on the green pinch. Shift your weight as you move your foot. Prepare to move left next."
+    },
+    {
+      "step": 4,
+      "hold": {
+        "id": 4,
+        "x": 425,
+        "y": 750,
+        "color": "green",
+        "type": "crimp",
+        "size": "small"
+      },
+      "limb": "right_foot",
+      "movement": "Place right foot on the green crimp",
+      "body_position": "Shift your weight as you move your foot. Prepare to move right next.",
+      "instruction": "Step 4: Place right foot on the green crimp. Shift your weight as you move your foot. Prepare to move right next."
+    },
+    {
+      "step": 5,
+      "hold": {
+        "id": 5,
+        "x": 475,
+        "y": 650,
+        "color": "green",
+        "type": "crimp",
+        "size": "small"
+      },
+      "limb": "left_hand",
+      "movement": "Move left hand to the green crimp",
+      "body_position": "Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers.",
+      "instruction": "Step 5: Move left hand to the green crimp. Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers."
+    },
+    {
+      "step": 6,
+      "hold": {
+        "id": 6,
+        "x": 375,
+        "y": 600,
+        "color": "green",
+        "type": "crimp",
+        "size": "small"
+      },
+      "limb": "right_hand",
+      "movement": "Move right hand to the green crimp",
+      "body_position": "Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers.",
+      "instruction": "Step 6: Move right hand to the green crimp. Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers."
+    },
+    {
+      "step": 7,
+      "hold": {
+        "id": 7,
+        "x": 450,
+        "y": 500,
+        "color": "green",
+        "type": "pinch",
+        "size": "small"
+      },
+      "limb": "left_foot",
+      "movement": "Place left foot on the green pinch",
+      "body_position": "Shift your weight as you move your foot. Prepare to move right next.",
+      "instruction": "Step 7: Place left foot on the green pinch. Shift your weight as you move your foot. Prepare to move right next."
+    },
+    {
+      "step": 8,
+      "hold": {
+        "id": 8,
+        "x": 540,
+        "y": 450,
+        "color": "yellow",
+        "type": "sloper",
+        "size": "medium"
+      },
+      "limb": "right_foot",
+      "movement": "Place right foot on the yellow sloper",
+      "body_position": "Shift your weight as you move your foot. Prepare to move left next.",
+      "instruction": "Step 8: Place right foot on the yellow sloper. Shift your weight as you move your foot. Prepare to move left next."
+    },
+    {
+      "step": 9,
+      "hold": {
+        "id": 9,
+        "x": 475,
+        "y": 350,
+        "color": "orange",
+        "type": "jug",
+        "size": "medium"
+      },
+      "limb": "left_hand",
+      "movement": "Move left hand to the orange jug",
+      "body_position": "Keep your center of gravity beneath your handholds. Full grip with fingers wrapped around the jug.",
+      "instruction": "Step 9: Move left hand to the orange jug. Keep your center of gravity beneath your handholds. Full grip with fingers wrapped around the jug."
+    },
+    {
+      "step": 10,
+      "hold": {
+        "id": 10,
+        "x": 400,
+        "y": 200,
+        "color": "red",
+        "type": "jug",
+        "size": "large"
+      },
+      "limb": "left_foot",
+      "movement": "Place left foot on the red jug",
+      "body_position": "Shift your weight as you move your foot. ",
+      "instruction": "Step 10: Place left foot on the red jug. Shift your weight as you move your foot. "
+    }
+  ]
+}

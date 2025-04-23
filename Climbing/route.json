@@ -1,0 +1,65 @@
+[
+  {
+    "step": 1,
+    "x": 450,
+    "y": 1050,
+    "color": "blue",
+    "instruction": "Step 1: move to blue hold at (x=450, y=1050)"
+  },
+  {
+    "step": 2,
+    "x": 400,
+    "y": 900,
+    "color": "green",
+    "instruction": "Step 2: move to green hold at (x=400, y=900)"
+  },
+  {
+    "step": 3,
+    "x": 500,
+    "y": 850,
+    "color": "green",
+    "instruction": "Step 3: move to green hold at (x=500, y=850)"
+  },
+  {
+    "step": 4,
+    "x": 425,
+    "y": 750,
+    "color": "green",
+    "instruction": "Step 4: move to green hold at (x=425, y=750)"
+  },
+  {
+    "step": 5,
+    "x": 475,
+    "y": 650,
+    "color": "green",
+    "instruction": "Step 5: move to green hold at (x=475, y=650)"
+  },
+  {
+    "step": 6,
+    "x": 375,
+    "y": 600,
+    "color": "green",
+    "instruction": "Step 6: move to green hold at (x=375, y=600)"
+  },
+  {
+    "step": 7,
+    "x": 450,
+    "y": 500,
+    "color": "green",
+    "instruction": "Step 7: move to green hold at (x=450, y=500)"
+  },
+  {
+    "step": 8,
+    "x": 540,
+    "y": 450,
+    "color": "yellow",
+    "instruction": "Step 8: move to yellow hold at (x=540, y=450)"
+  },
+  {
+    "step": 9,
+    "x": 400,
+    "y": 200,
+    "color": "red",
+    "instruction": "Step 9: move to red hold at (x=400, y=200)"
+  }
+]

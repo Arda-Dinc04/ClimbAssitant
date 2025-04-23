@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climbing Route Analyzer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .image-container {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .instructions-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        #climbing-wall {
+            width: 100%;
+            max-height: 600px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+        }
+        #canvas-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+        }
+        .upload-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .step-card {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+        .step-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .step-card p {
+            margin: 5px 0;
+        }
+        .hold-details {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .limb {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .loading img {
+            width: 50px;
+        }
+        .info-section {
+            background-color: #fff;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Climbing Route Analyzer</h1>
+        <p>Upload an image of a climbing wall to get optimal route suggestions with limb placement advice</p>
+    </header>
+
+    <div class="upload-section">
+        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+        <button class="btn" id="upload-btn">Upload Climbing Wall Image</button>
+        <button class="btn" id="analyze-btn" style="margin-left: 10px;">Analyze Route</button>
+        <button class="btn" id="demo-btn" style="margin-left: 10px;">Load Demo Image</button>
+    </div>
+
+    <div class="loading" id="loading">
+        <p>Analyzing climbing wall...</p>
+        <!-- You can add a spinner image here -->
+    </div>
+
+    <div class="container">
+        <div class="image-container">
+            <img id="climbing-wall" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='800' viewBox='0 0 600 800'%3E%3Crect width='600' height='800' fill='%23e0e0e0'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' fill='%23333333' text-anchor='middle' alignment-baseline='middle'%3EUpload a climbing wall image%3C/text%3E%3C/svg%3E" alt="Upload a climbing wall image">
+            <canvas id="canvas-overlay"></canvas>
+        </div>
+        
+        <div class="instructions-container" id="instructions">
+            <h2>Climbing Instructions</h2>
+            <p>Upload an image and click "Analyze Route" to get step-by-step instructions.</p>
+            <div id="steps-container"></div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>How to Use This Tool</h2>
+        <ol>
+            <li><strong>Upload Image:</strong> Click "Upload Climbing Wall Image" to select a photo of a climbing wall</li>
+            <li><strong>Analyze:</strong> Click "Analyze Route" to get the optimal climbing route</li>
+            <li><strong>Follow Instructions:</strong> The system will suggest which limb to use for each hold</li>
+        </ol>
+        <p>For demonstration purposes, you can click "Load Demo Image" to see how the route analysis works.</p>
+        
+        <h3>About Climbing Route Analysis</h3>
+        <p>This tool analyzes climbing routes by:</p>
+        <ul>
+            <li>Identifying the locations of holds on the wall</li>
+            <li>Planning an optimal path from bottom to top</li>
+            <li>Suggesting which limb (left/right hand/foot) should be used for each hold</li>
+            <li>Providing body positioning advice for efficient climbing</li>
+        </ul>
+    </div>
+
+    <script>
+        // DOM elements
+        const uploadBtn = document.getElementById('upload-btn');
+        const imageUpload = document.getElementById('image-upload');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const demoBtn = document.getElementById('demo-btn');
+        const climbingWall = document.getElementById('climbing-wall');
+        const canvas = document.getElementById('canvas-overlay');
+        const stepsContainer = document.getElementById('steps-container');
+        const loadingIndicator = document.getElementById('loading');
+
+        // Sample route data for demo
+        const demoRouteData = {
+            "route_info": {
+                "total_steps": 10,
+                "difficulty": "intermediate",
+                "image": "climbing_wall.jpg"
+            },
+            "holds": [
+                {"id": 0, "x": 275, "y": 1050, "color": "blue", "size": "medium", "type": "jug"},
+                {"id": 1, "x": 450, "y": 1050, "color": "blue", "size": "medium", "type": "jug"},
+                {"id": 2, "x": 400, "y": 900, "color": "green", "size": "small", "type": "crimp"},
+                {"id": 3, "x": 500, "y": 850, "color": "green", "size": "small", "type": "pinch"},
+                {"id": 4, "x": 425, "y": 750, "color": "green", "size": "small", "type": "crimp"},
+                {"id": 5, "x": 475, "y": 650, "color": "green", "size": "small", "type": "crimp"},
+                {"id": 6, "x": 375, "y": 600, "color": "green", "size": "small", "type": "crimp"},
+                {"id": 7, "x": 450, "y": 500, "color": "green", "size": "small", "type": "pinch"},
+                {"id": 8, "x": 540, "y": 450, "color": "yellow", "size": "medium", "type": "sloper"},
+                {"id": 9, "x": 475, "y": 350, "color": "orange", "size": "medium", "type": "jug"},
+                {"id": 10, "x": 400, "y": 200, "color": "red", "size": "large", "type": "jug"}
+            ],
+            "instructions": [
+                {
+                    "step": 1,
+                    "hold": {"id": 1, "x": 450, "y": 1050, "color": "blue", "type": "jug", "size": "medium"},
+                    "limb": "left_hand",
+                    "movement": "Start with left hand on the first hold",
+                    "body_position": "Standing at the base, reach up with left hand",
+                    "instruction": "Step 1: Start with left hand on the first hold. Standing at the base, reach up with left hand"
+                },
+                {
+                    "step": 2,
+                    "hold": {"id": 2, "x": 400, "y": 900, "color": "green", "type": "crimp", "size": "small"},
+                    "limb": "right_hand",
+                    "movement": "Place right hand on the next hold",
+                    "body_position": "Weight balanced between both arms, feet on starting holds or features",
+                    "instruction": "Step 2: Place right hand on the next hold. Weight balanced between both arms, feet on starting holds or features"
+                },
+                {
+                    "step": 3,
+                    "hold": {"id": 3, "x": 500, "y": 850, "color": "green", "type": "pinch", "size": "small"},
+                    "limb": "left_foot",
+                    "movement": "Place left foot on the green pinch",
+                    "body_position": "Shift your weight as you move your foot. Prepare to move right next.",
+                    "instruction": "Step 3: Place left foot on the green pinch. Shift your weight as you move your foot. Prepare to move right next."
+                },
+                {
+                    "step": 4,
+                    "hold": {"id": 4, "x": 425, "y": 750, "color": "green", "type": "crimp", "size": "small"},
+                    "limb": "right_foot",
+                    "movement": "Place right foot on the green crimp",
+                    "body_position": "Shift your weight as you move your foot. Prepare to move left next.",
+                    "instruction": "Step 4: Place right foot on the green crimp. Shift your weight as you move your foot. Prepare to move left next."
+                },
+                {
+                    "step": 5,
+                    "hold": {"id": 5, "x": 475, "y": 650, "color": "green", "type": "crimp", "size": "small"},
+                    "limb": "left_hand",
+                    "movement": "Move left hand to the green crimp",
+                    "body_position": "Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers.",
+                    "instruction": "Step 5: Move left hand to the green crimp. Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers."
+                },
+                {
+                    "step": 6,
+                    "hold": {"id": 6, "x": 375, "y": 600, "color": "green", "type": "crimp", "size": "small"},
+                    "limb": "right_hand",
+                    "movement": "Move right hand to the green crimp",
+                    "body_position": "Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers.",
+                    "instruction": "Step 6: Move right hand to the green crimp. Keep your center of gravity beneath your handholds. Crimp carefully with straight fingers."
+                },
+                {
+                    "step": 7,
+                    "hold": {"id": 7, "x": 450, "y": 500, "color": "green", "type": "pinch", "size": "small"},
+                    "limb": "left_foot",
+                    "movement": "Place left foot on the green pinch",
+                    "body_position": "Shift your weight as you move your foot. Prepare to move right next.",
+                    "instruction": "Step 7: Place left foot on the green pinch. Shift your weight as you move your foot. Prepare to move right next."
+                },
+                {
+                    "step": 8,
+                    "hold": {"id": 8, "x": 540, "y": 450, "color": "yellow", "type": "sloper", "size": "medium"},
+                    "limb": "right_foot",
+                    "movement": "Place right foot on the yellow sloper",
+                    "body_position": "Shift your weight as you move your foot. Prepare to move left next.",
+                    "instruction": "Step 8: Place right foot on the yellow sloper. Shift your weight as you move your foot. Prepare to move left next."
+                },
+                {
+                    "step": 9,
+                    "hold": {"id": 9, "x": 475, "y": 350, "color": "orange", "type": "jug", "size": "medium"},
+                    "limb": "left_hand",
+                    "movement": "Move left hand to the orange jug",
+                    "body_position": "Keep your center of gravity beneath your handholds. Full grip with fingers wrapped around the jug.",
+                    "instruction": "Step 9: Move left hand to the orange jug. Keep your center of gravity beneath your handholds. Full grip with fingers wrapped around the jug."
+                },
+                {
+                    "step": 10,
+                    "hold": {"id": 10, "x": 400, "y": 200, "color": "red", "type": "jug", "size": "large"},
+                    "limb": "right_hand",
+                    "movement": "Move right hand to the red jug",
+                    "body_position": "Keep your center of gravity beneath your handholds. Full grip with fingers wrapped around the jug.",
+                    "instruction": "Step 10: Move right hand to the red jug. Keep your center of gravity beneath your handholds. Full grip with fingers wrapped around the jug."
+                }
+            ]
+        };
+
+        // Event listeners
+        uploadBtn.addEventListener('click', () => {
+            imageUpload.click();
+        });
+
+        imageUpload.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    climbingWall.src = event.target.result;
+                    resetCanvas();
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        analyzeBtn.addEventListener('click', () => {
+            if (climbingWall.src.includes('svg')) {
+                alert('Please upload an image first or use the demo image.');
+                return;
+            }
+            
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
+            
+            // Since we don't have a backend, we'll use the demo route data
+            // In a real implementation, this would make an API call to your backend
+            setTimeout(() => {
+                displayRouteResults(demoRouteData);
+                loadingIndicator.style.display = 'none';
+            }, 1500);
+        });
+
+        demoBtn.addEventListener('click', () => {
+            // Load actual climbing wall image (embedded as base64 if needed)
+            // For now, use a placeholder
+            climbingWall.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='800' viewBox='0 0 600 800'%3E%3Crect width='600' height='800' fill='%23e0e0e0'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='24' fill='%23333333' text-anchor='middle' alignment-baseline='middle'%3EDemo Climbing Wall%3C/text%3E%3C/svg%3E";
+            resetCanvas();
+            
+            // Wait for image to load, then show demo results
+            climbingWall.onload = () => {
+                // Show loading indicator briefly
+                loadingIndicator.style.display = 'block';
+                
+                setTimeout(() => {
+                    displayRouteResults(demoRouteData);
+                    loadingIndicator.style.display = 'none';
+                }, 800);
+            };
+        });
+
+        // When the image loads, adjust the canvas size
+        climbingWall.addEventListener('load', () => {
+            resizeCanvas();
+        });
+
+        // Resize canvas when window resizes
+        window.addEventListener('resize', resizeCanvas);
+
+        // Function to reset the canvas
+        function resetCanvas() {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stepsContainer.innerHTML = '<p>Click "Analyze Route" to get step-by-step instructions.</p>';
+        }
+
+        // Function to resize canvas to match the image size
+        function resizeCanvas() {
+            canvas.width = climbingWall.clientWidth;
+            canvas.height = climbingWall.clientHeight;
+        }
+
+        // Function to display route results
+        function displayRouteResults(routeData) {
+            // Draw the route on the canvas
+            drawRoute(routeData);
+            
+            // Display step-by-step instructions
+            displayInstructions(routeData.instructions);
+        }
+
+        // Function to draw the route on the canvas
+        function drawRoute(routeData) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const instructions = routeData.instructions;
+            
+            // Scale factors to convert from original image coordinates to current display size
+            const scaleX = canvas.width / 800;  // Assuming original coordinates are based on 800px width
+            const scaleY = canvas.height / 1200; // Assuming original coordinates are based on 1200px height
+            
+            // Draw all holds
+            routeData.holds.forEach(hold => {
+                const x = hold.x * scaleX;
+                const y = hold.y * scaleY;
+                
+                // Draw hold
+                ctx.beginPath();
+                ctx.arc(x, y, 10, 0, Math.PI * 2);
+                ctx.fillStyle = hold.color;
+                ctx.fill();
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+            
+            // Draw the route path
+            ctx.beginPath();
+            ctx.moveTo(instructions[0].hold.x * scaleX, instructions[0].hold.y * scaleY);
+            
+            for (let i = 1; i < instructions.length; i++) {
+                const hold = instructions[i].hold;
+                ctx.lineTo(hold.x * scaleX, hold.y * scaleY);
+            }
+            
+            ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Draw step numbers and limb indicators
+            for (let i = 0; i < instructions.length; i++) {
+                const hold = instructions[i].hold;
+                const x = hold.x * scaleX;
+                const y = hold.y * scaleY;
+                
+                // Draw white background for number
+                ctx.beginPath();
+                ctx.arc(x, y, 12, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                
+                // Draw step number
+                ctx.font = 'bold 14px Arial';
+                ctx.fillStyle = '#333';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(instructions[i].step, x, y);
+                
+                // Draw limb indicator
+                const limb = instructions[i].limb;
+                let limbX = x;
+                let limbY = y - 20;
+                
+                ctx.font = 'bold 12px Arial';
+                
+                if (limb === 'left_hand') {
+                    ctx.fillStyle = 'blue';
+                    ctx.fillText('LH', limbX, limbY);
+                } else if (limb === 'right_hand') {
+                    ctx.fillStyle = 'red';
+                    ctx.fillText('RH', limbX, limbY);
+                } else if (limb === 'left_foot') {
+                    ctx.fillStyle = 'green';
+                    ctx.fillText('LF', limbX, limbY);
+                } else if (limb === 'right_foot') {
+                    ctx.fillStyle = 'purple';
+                    ctx.fillText('RF', limbX, limbY);
+                }
+            }
+        }
+
+        // Function to display step-by-step instructions
+        function displayInstructions(instructions) {
+            stepsContainer.innerHTML = '';
+            
+            instructions.forEach(step => {
+                const stepCard = document.createElement('div');
+                stepCard.className = 'step-card';
+                
+                // Create step heading
+                const heading = document.createElement('h3');
+                heading.textContent = `Step ${step.step}`;
+                stepCard.appendChild(heading);
+                
+                // Create movement description
+                const movement = document.createElement('p');
+                let limbText = step.limb;
+                limbText = limbText.replace('_', ' ');
+                movement.innerHTML = `<span class="limb">${limbText}</span>: ${step.movement}`;
+                stepCard.appendChild(movement);
+                
+                // Create body position guidance
+                const bodyPosition = document.createElement('p');
+                bodyPosition.textContent = step.body_position;
+                stepCard.appendChild(bodyPosition);
+                
+                // Create hold details
+                const holdDetails = document.createElement('p');
+                holdDetails.className = 'hold-details';
+                holdDetails.textContent = `Hold: ${step.hold.color} ${step.hold.type} (${step.hold.size})`;
+                stepCard.appendChild(holdDetails);
+                
+                stepsContainer.appendChild(stepCard);
+            });
+        }
+    </script>
+</body>
+</html> 
